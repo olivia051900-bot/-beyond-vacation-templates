@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>Conf# For</title>
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    @page {
+        size: A4;
+        margin: 18mm 15mm;
+        background-color: #ffffff;
+    }
+    body {
+        margin: 0 auto;
+        padding: 0;
+        max-width: 700px; /* Constrain width to look exactly like the target image */
+        font-family: 'Arial', 'Times New Roman', Times, serif, 'Microsoft YaHei', sans-serif;
+        color: #222222;
+        font-size: 10.5pt;
+        line-height: 1.4;
+        background-color: #ffffff;
+    }
+    
+    /* Header Section */
+    .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .logo-cell {
+        width: 48%;
+        vertical-align: middle;
+    }
+    .logo-container {
+        height: 65px;
+    }
+    .logo-img {
+        height: 58px;
+        vertical-align: middle;
+        display: inline-block;
+    }
+    .logo-text {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 8px;
+    }
+    .brand-name {
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 14pt;
+        color: #0b1a30;
+        letter-spacing: 0.3px;
+        line-height: 1.1;
+    }
+    .brand-slogan {
+        font-family: 'Georgia', serif;
+        font-style: italic;
+        font-size: 8.5pt;
+        color: #a88350;
+        margin-top: 2px;
+    }
+    .title-cell {
+        width: 52%;
+        text-align: left; /* Shifted left as requested */
+        padding-left: 40px; /* Moderate indent to look balanced, not pushed to the far edge */
+        vertical-align: middle;
+    }
+    .main-title {
+        font-family: 'Arial', sans-serif;
+        font-weight: 800;
+        font-size: 24pt;
+        color: #0b1a30;
+        letter-spacing: 1.5px;
+        margin: 0 0 4px 0;
+    }
+    .subtitle {
+        font-family: 'Arial', sans-serif;
+        font-size: 10pt;
+        color: #a88350;
+        margin: 0;
+    }
+
+    /* Decorative Line */
+    .gold-line {
+        height: 1.5px;
+        background-color: #a88350;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+    /* 2 Column Details Table - narrowed structure */
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+    .details-table td {
+        width: 50%;
+        vertical-align: top;
+        padding: 0 25px 16px 0; /* Tightened column gaps */
+    }
+    .details-table td.right-col {
+        padding: 0 0 16px 5px; /* Shift right column contents to the left */
+    }
+    
+    .info-block {
+        display: table;
+        width: 100%;
+    }
+    .icon-cell {
+        display: table-cell;
+        width: 26px;
+        vertical-align: top;
+        padding-top: 2px;
+    }
+    .text-cell {
+        display: table-cell;
+        vertical-align: top;
+    }
+    
+    .icon-box {
+        width: 17px;
+        height: 17px;
+    }
+    
+    .label {
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 9pt;
+        color: #0b1a30;
+        letter-spacing: 0.3px;
+        margin: 0 0 2px 0;
+    }
+    .value {
+        font-size: 10pt;
+        color: #444444;
+        margin: 0;
+    }
+    .editable-field {
+        color: #b08d5b;
+        font-weight: bold;
+        background-color: rgba(176, 141, 91, 0.05);
+        padding: 1px 3px;
+        border-radius: 2px;
+    }
+
+    /* Section Headings */
+    .section-title {
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 10.5pt;
+        color: #0b1a30;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 18px 0 8px 0;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    
+    /* Routing Table */
+    .routing-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+    .routing-table td {
+        padding: 8px 0;
+        border-bottom: 1px dashed #e5e5e5;
+        vertical-align: middle;
+        font-size: 10pt;
+    }
+    .routing-table tr:last-child td {
+        border-bottom: none;
+    }
+    .route-label-cell {
+        width: 65px;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        font-size: 9.5pt;
+        color: #0b1a30;
+    }
+
+    /* Notes block */
+    .notes-box {
+        font-size: 10pt;
+        color: #444444;
+        margin-bottom: 20px;
+        min-height: 35px;
+    }
+
+    /* Terms and Conditions */
+    .terms-section {
+        margin-bottom: 30px;
+    }
+    .terms-text {
+        font-size: 8.5pt;
+        color: #666666;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    /* Footer Contacts */
+    .footer-line {
+        height: 1px;
+        background-color: #a88350;
+        width: 100%;
+        margin-bottom: 12px;
+    }
+    .footer-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .footer-table td {
+        text-align: center;
+        width: 33.33%;
+        font-size: 9pt;
+        color: #555555;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    /* 右上角操作按钮 */
+    .action-bar {
+        position: sticky;
+        top: 10px;
+        z-index: 9999;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0 18px;
+        font-family: Arial, sans-serif;
+    }
+    .action-btn {
+        border: 1px solid #a88350;
+        border-radius: 5px;
+        padding: 9px 14px;
+        background: #ffffff;
+        color: #a88350;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .action-btn.primary {
+        background: #0b1a30;
+        color: #ffffff;
+        border-color: #0b1a30;
+    }
+    .copy-status {
+        min-width: 150px;
+        text-align: right;
+        color: #0b1a30;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    @media print {
+        .action-bar {
+            display: none !important;
+        }
+        .editable-field {
+            background-color: transparent !important;
+            padding: 0 !important;
+            color: #222222 !important;
+            font-weight: normal !important;
+        }
+    }
+
+    /* 可编辑空白字段：输入和粘贴后保持同款金色 */
+    .editable-field {
+        display: inline-block;
+        min-width: 92px;
+        min-height: 1.25em;
+        color: #b08d5b !important;
+        font-weight: bold;
+        caret-color: #b08d5b;
+        white-space: pre-wrap;
+        outline: none;
+    }
+    .routing-table .editable-field,
+    .notes-box .editable-field {
+        min-width: 260px;
+    }
+    .editable-field:focus {
+        background-color: rgba(176, 141, 91, 0.10);
+    }
+
+    /* WPS 可编辑 PDF 优化：打印时使用常见系统字体，尽量避免 Type 3 字体 */
+    @media print {
+        html, body, body *,
+        table, table *, .editable-field, .value, .label,
+        .section-title, .terms-text, .footer-table, .footer-table * {
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-variant: normal !important;
+            font-feature-settings: normal !important;
+            text-shadow: none !important;
+            filter: none !important;
+        }
+        .brand-name, .main-title, .label, .section-title,
+        .route-label-cell {
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+    }
+
+
+    /* iPad / Safari 打印保色优化 */
+    @media print {
+        html, body, body *,
+        table, table *, div, span, p, h1, h2, td, th, svg {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        html, body {
+            background: #ffffff !important;
+        }
+
+        .main-title,
+        .label,
+        .section-title,
+        .route-label-cell {
+            color: #0b1a30 !important;
+            -webkit-text-fill-color: #0b1a30 !important;
+        }
+
+        .subtitle,
+        .brand-slogan {
+            color: #a88350 !important;
+            -webkit-text-fill-color: #a88350 !important;
+        }
+
+        .gold-line,
+        .footer-line {
+            background-color: #a88350 !important;
+        }
+
+        .value,
+        .terms-text,
+        .footer-table td {
+            color: #444444 !important;
+            -webkit-text-fill-color: #444444 !important;
+        }
+
+        .editable-field {
+            color: #222222 !important;
+            -webkit-text-fill-color: #222222 !important;
+            background-color: transparent !important;
+        }
+
+        svg, svg * {
+            stroke: #a88350 !important;
+        }
+    }
+
+</style>
+</head>
+<body contenteditable="true">
+<div aria-label="Document actions" class="action-bar" contenteditable="false">
+<span class="copy-status" id="copyStatus"></span>
+<button class="action-btn primary" onclick="copyConfirmationToGmail()" type="button">Copy for Gmail</button>
+<button class="action-btn" onclick="window.print()" type="button">Print / Save PDF</button>
+</div>
+<!-- Header Table -->
+<table class="header-table" contenteditable="false">
+<tr>
+<td class="logo-cell">
+<div class="logo-container" style="height: auto; padding: 5px 0;">
+<div style="font-family: 'Times New Roman', Times, serif; font-size: 20pt; font-weight: bold; color: #222222; letter-spacing: 1px; line-height: 1.1;">
+                            BEYOND VACATION
+                        </div>
+<div style="font-family: 'Arial', sans-serif; font-size: 8.5pt; color: #a88350; letter-spacing: 2px; margin-top: 4px; font-weight: bold;">
+                            EXECUTIVE TRANSPORTATION
+                        </div>
+</div>
+</td>
+<td class="title-cell">
+<h1 class="main-title">CONFIRMATION</h1>
+<p class="subtitle">Confirmation Number #<span class="editable-field" contenteditable="true" spellcheck="false">        </span></p>
+</td>
+</tr>
+</table>
+<!-- Decorative Gold Line -->
+<div class="gold-line" contenteditable="false"></div>
+<!-- Main Details 2-Column Grid -->
+<table class="details-table">
+<tr>
+<!-- Left Column -->
+<td>
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">PICK-UP DATE:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+<!-- Right Column (Shifted closer to left column) -->
+<td class="right-col">
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">SERVICE TYPE:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">PICK-UP TIME:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+<td class="right-col">
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="3"></circle><circle cx="17" cy="17" r="3"></circle></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">VEHICLE TYPE:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">PRIMARY PASSENGER:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+<td class="right-col">
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="10" cy="13" r="2"></circle><path d="M14 17c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2"></path></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">PRIMARY / BILLING CONTACT:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">Four Season Westlake Hotel</span></div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">PASSENGER CONTACT:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+<td class="right-col">
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><rect height="16" rx="2" width="20" x="2" y="4"></rect><line x1="12" y1="4" y2="20"></line><line x1="18" y1="8" y2="16"></line><line x1="6" y1="8" y2="16"></line></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">RATE:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">$ </span></div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="info-block">
+<div class="icon-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" viewbox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+</div>
+<div class="text-cell">
+<div class="label" contenteditable="false">NUMBER OF PASSENGERS:</div>
+<div class="value"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+</div>
+</div>
+</td>
+<td class="right-col">
+</td>
+</tr> </table>
+<!-- Trip Routing Section -->
+<h2 class="section-title" contenteditable="false">TRIP ROUTING INFORMATION</h2>
+<table class="routing-table">
+<tr>
+<td class="route-label-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" style="vertical-align:middle; margin-right:5px;" viewbox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>PU:
+            </td>
+<td><span class="editable-field" contenteditable="true" spellcheck="false">        </span></td>
+</tr>
+<tr>
+<td class="route-label-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" style="vertical-align:middle; margin-right:5px;" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>WT:
+            </td>
+<td><span class="editable-field" contenteditable="true" spellcheck="false">N/A</span></td>
+</tr>
+<tr>
+<td class="route-label-cell" contenteditable="false">
+<svg class="icon-box" fill="none" stroke="#a88350" stroke-width="2" style="vertical-align:middle; margin-right:5px;" viewbox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>DO:
+            </td>
+<td><span class="editable-field" contenteditable="true" spellcheck="false">        </span></td>
+</tr>
+</table>
+<!-- Additional Notes -->
+<h2 class="section-title" contenteditable="false">ADDITIONAL NOTES</h2>
+<div class="notes-box"><span class="editable-field" contenteditable="true" spellcheck="false">        </span></div>
+<!-- Terms and Conditions -->
+<div class="terms-section" contenteditable="false">
+<h2 class="section-title">TERMS &amp; CONDITIONS</h2>
+<div class="terms-text">All deposits are NON refundable. Company is not liable in the event of mechanical
+
+breakdown while on charter and will only be responsible for making up lost time at a
+
+mutually agreed date. The client assumes full financial liability for any damage to the limousine caused during the duration of the rental by them or any members of their party. A fee of 250.00 for each carpet or seat burn. Sanitation fee is 250.00. Alcohol Consumption and drug use is prohibited by law. Any fines will be paid for by the customer. The driver has the right to terminate run without refund (if there is blatant
+
+indiscretion on the part of the client(s)) . It is Illegal to stand through the sunroof. Smoking is prohibited in the car. Overtime pay will apply after the first 15 minutes of prearranged time described on the run sheet. The company is not responsible for delays or itinerary disruptions caused by force majeure factors such as road conditions. Not responsible for articles left in the limousine. Vehicles cannot be loaded beyond seating capacity. 
+
+</div>
+<div class="terms-text" style="font-style: italic; margin-top: 5px;">Please feel free to contact us should you require any additional information.</div>
+
+<h2 class="section-title">CANCELLATION POLICY</h2>
+<div class="terms-text">Cancellations made within 24 hours of the scheduled service will be charged in full.</div>
+</div>
+<!-- Footer Contacts Container -->
+<div class="footer-line" contenteditable="false"></div>
+<table class="footer-table" contenteditable="false">
+<tr>
+<td style="font-size: 11pt; color: #555555; font-weight: normal; padding-right: 15px;">
+<svg fill="none" stroke="#a88350" stroke-width="2.5" style="width:13px; height:13px; vertical-align:middle; margin-right:5px;" viewbox="0 0 24 24">
+<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+</svg>
+                Contact  510-590-1987 
+            </td>
+<td style="font-size: 11pt; color: #555555; font-weight: normal;">
+<svg fill="none" stroke="#a88350" stroke-width="2" style="width:13px; height:13px; vertical-align:middle; margin-right:5px;" viewbox="0 0 24 24">
+<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+<polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+               E-mail  beyondvacationinc@gmail.com 
+            </td>
+<script contenteditable="false">
+    function setCopyStatus(message, isError) {
+        var status = document.getElementById("copyStatus");
+        if (!status) return;
+        status.textContent = message;
+        status.style.color = isError ? "#a40000" : "#0b1a30";
+        clearTimeout(setCopyStatus.timer);
+        setCopyStatus.timer = setTimeout(function() {
+            status.textContent = "";
+        }, 3500);
+    }
+
+    function buildGmailCopy() {
+        var clone = document.body.cloneNode(true);
+
+        clone.querySelectorAll(".action-bar, script").forEach(function(el) {
+            el.remove();
+        });
+
+        clone.querySelectorAll("[contenteditable]").forEach(function(el) {
+            el.removeAttribute("contenteditable");
+        });
+
+        clone.style.margin = "0";
+        clone.style.padding = "0";
+        clone.style.maxWidth = "700px";
+        clone.style.width = "100%";
+        clone.style.backgroundColor = "#ffffff";
+        clone.style.fontFamily = "Arial, Helvetica, sans-serif";
+        clone.style.color = "#222222";
+
+        return clone;
+    }
+
+    function copyConfirmationToGmail() {
+        var clone = buildGmailCopy();
+        var wrapper = document.createElement("div");
+
+        wrapper.style.position = "fixed";
+        wrapper.style.left = "-10000px";
+        wrapper.style.top = "0";
+        wrapper.style.background = "#ffffff";
+        wrapper.appendChild(clone);
+        document.documentElement.appendChild(wrapper);
+
+        var copied = false;
+
+        try {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+
+            var range = document.createRange();
+            range.selectNodeContents(clone);
+            selection.addRange(range);
+
+            copied = document.execCommand("copy");
+            selection.removeAllRanges();
+        } catch (error) {
+            console.error(error);
+        }
+
+        wrapper.remove();
+
+        if (copied) {
+            setCopyStatus("Copied — paste into Gmail");
+        } else {
+            setCopyStatus("Copy failed. Use Chrome or Safari.", true);
+        }
+    }
+</script>
+</tr></table><script contenteditable="false">
+document.addEventListener("paste", function(event) {
+    var field = event.target.closest && event.target.closest(".editable-field");
+    if (!field) return;
+
+    event.preventDefault();
+    var text = (event.clipboardData || window.clipboardData).getData("text/plain");
+    text = text.replace(/\r?\n/g, " ");
+
+    var selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    selection.deleteFromDocument();
+    var range = selection.getRangeAt(0);
+    var node = document.createTextNode(text);
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+});
+</script></body>
+</html>

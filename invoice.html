@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice # For  [  ]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0A1C33;
+            --luxury-gold: #AF8B51;
+            --text-dark: #333333;
+            --bg-light: #F8F9FA;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: var(--text-dark);
+            background-color: #ffffff;
+        }
+        .invoice-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .action-bar {
+            max-width: 1100px;
+            margin: 0 auto 18px;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            position: sticky;
+            top: 10px;
+            z-index: 1000;
+        }
+        .action-bar,
+        .action-btn,
+        .copy-status {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .action-btn {
+            font-family: 'Montserrat', sans-serif;
+            border: 1px solid var(--luxury-gold);
+            border-radius: 5px;
+            padding: 10px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #fff;
+            color: var(--luxury-gold);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: #fff;
+            border-color: var(--primary-blue);
+        }
+        .copy-status {
+            align-self: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            min-width: 145px;
+            text-align: right;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 25px;
+            border-bottom: 3px solid var(--luxury-gold);
+            margin-bottom: 40px;
+        }
+        .logo-main {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .logo-sub {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--luxury-gold);
+            letter-spacing: 3px;
+            margin: 8px 0 0 0;
+            text-transform: uppercase;
+        }
+        .invoice-title {
+            font-size: 46px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 3px;
+            margin: 0;
+        }
+        [contenteditable="true"] {
+            outline: none;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        [contenteditable="true"]:hover {
+            background-color: rgba(175, 139, 81, 0.1);
+        }
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .info-block { width: 45%; }
+        .info-block h3 {
+            color: var(--primary-blue);
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #E0E0E0;
+            padding-bottom: 6px;
+        }
+        .info-block p { margin: 8px 0; font-size: 14px; }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .details-table th {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 12px 10px;
+            text-align: left;
+            text-transform: uppercase;
+        }
+        .details-table td {
+            padding: 12px 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #EAEAEA;
+        }
+        .details-table tr:nth-child(even) { background-color: var(--bg-light); }
+        
+        /* 明细表填写内容统一缩小字号 */
+        .details-table td,
+        .details-table td[contenteditable="true"],
+        .details-table .calc-input,
+        .details-table .select-input {
+            font-size: 12px !important;
+        }
+
+        /* Amount 列：加粗并使用与 Total 相同的深蓝色 */
+        .details-table .val-amount,
+        .details-table td:nth-child(9) .print-value {
+            color: var(--primary-blue) !important;
+            -webkit-text-fill-color: var(--primary-blue) !important;
+            font-weight: 800 !important;
+        }
+
+
+        /* 输入框与下拉菜单的高级样式 */
+        .calc-input, .select-input {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            border: 1px solid transparent;
+            background: transparent;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 4px;
+            color: var(--text-dark);
+        }
+        .calc-input:hover, .select-input:hover { background-color: rgba(175, 139, 81, 0.1); }
+        .calc-input:focus, .select-input:focus { outline: none; border-color: var(--luxury-gold); background: #fff; }
+        
+        /* 针对 N/A 状态的输入框样式 */
+        .calc-input:disabled {
+            background: transparent !important;
+            color: #bbb;
+            text-align: center;
+            cursor: not-allowed;
+        }
+
+        /* Hourly 模式下，Amount 虽为禁用状态，但保持深色并右对齐 */
+        .val-amount:disabled {
+            color: #333333 !important;
+            opacity: 1 !important;
+            -webkit-text-fill-color: #333333 !important;
+            text-align: right !important;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+        .btn-add-row {
+            background-color: #ffffff;
+            border: 1px solid var(--luxury-gold);
+            color: var(--luxury-gold);
+            padding: 8px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn-add-row:hover {
+            background-color: var(--luxury-gold);
+            color: #ffffff;
+        }
+        .total-box {
+            width: 350px;
+            border-top: 2px solid var(--luxury-gold);
+            padding-top: 15px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+        /* Payment Method */
+        .payment-method-box {
+            width: 560px;
+            margin: 105px 0 6px 0;
+            padding: 14px 18px;
+            border-left: 3px solid var(--luxury-gold);
+            background: linear-gradient(90deg, rgba(175,139,81,0.09), rgba(175,139,81,0.02));
+            border-radius: 0 6px 6px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .payment-method-title {
+            margin: 0 0 7px 0;
+            color: var(--primary-blue);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .payment-method-line {
+            margin: 3px 0;
+            color: var(--text-dark);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .payment-method-line strong {
+            color: var(--luxury-gold);
+            font-weight: 700;
+        }
+
+        .footer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #888888;
+            border-top: 1px solid #EAEAEA;
+            padding-top: 20px;
+        }
+        .delete-btn {
+            color: #cc0000;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+            opacity: 0.3;
+        }
+        tr:hover .delete-btn { opacity: 1; }
+        
+        /* 打印优化：隐藏下拉菜单的小箭头、按钮、删除键 */
+        @media print {
+            .action-bar, .btn-add-row, .delete-btn { display: none !important; }
+
+            /* 只调整 PDF：保持页边距不动，并确保所有内容完整显示 */
+            .details-table {
+                width: 100% !important;
+                table-layout: auto !important;
+            }
+
+            /* 防止 Service Type 原来的 min-width: 140px 把整张表撑宽 */
+            .details-table .select-input {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Service Type 一列适度缩窄，但不强制截断内容 */
+            .details-table th:nth-child(2),
+            .details-table td:nth-child(2) {
+                width: 9% !important;
+            }
+
+            /* 打印时略微缩小字体和左右留白，让九列完整容纳 */
+            .details-table th {
+                font-size: 11px !important;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+                white-space: normal !important;
+            }
+
+            .details-table td {
+                font-size: 12px !important;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+                white-space: nowrap !important;
+            }
+
+            .details-table input,
+            .details-table select {
+                font-size: 12px !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 给 Rate 和 Amount 留出足够宽度，避免金额被截断 */
+            .details-table th:nth-child(8),
+            .details-table td:nth-child(8) {
+                width: 11% !important;
+            }
+
+            .details-table th:nth-child(9),
+            .details-table td:nth-child(9) {
+                width: 12% !important;
+            }
+
+            /* 从较宽的描述和附加费用列中腾出空间 */
+            .details-table th:nth-child(4),
+            .details-table td:nth-child(4) {
+                width: 18% !important;
+            }
+
+            .details-table th:nth-child(6),
+            .details-table td:nth-child(6) {
+                width: 13% !important;
+            }
+
+            .details-table .val-rate,
+            .details-table .val-amount {
+                width: 100% !important;
+                min-width: 0 !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                text-align: right !important;
+                overflow: visible !important;
+            }
+
+            .calc-input { border: none !important; }
+            .select-input {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                border: none !important;
+                background: transparent !important;
+            }
+        }
+
+        /* 打印时使用普通文字代替 input/select，避免 Rate 和 Amount 被输入框裁切 */
+        .print-value {
+            display: none;
+        }
+
+        @media print {
+            .details-table input.print-hidden,
+            .details-table select.print-hidden {
+                display: none !important;
+            }
+
+            .details-table .print-value {
+                display: inline-block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                white-space: nowrap !important;
+                font-size: 11px !important;
+            }
+
+            .details-table td:nth-child(7) .print-value {
+                text-align: center !important;
+            }
+
+            .details-table td:nth-child(8) .print-value,
+            .details-table td:nth-child(9) .print-value {
+                text-align: right !important;
+            }
+
+            .details-table th:nth-child(8),
+            .details-table td:nth-child(8) {
+                width: 12% !important;
+            }
+
+            .details-table th:nth-child(9),
+            .details-table td:nth-child(9) {
+                width: 13% !important;
+            }
+        }
+
+    
+        /* WPS 可编辑 PDF 优化 */
+        @media print {
+            html, body, .invoice-container, .invoice-container *,
+            .details-table, .details-table *, .payment-method-box,
+            .payment-method-box *, .footer, .footer * {
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-variant: normal !important;
+                font-feature-settings: normal !important;
+                text-shadow: none !important;
+                filter: none !important;
+            }
+            .logo-main, .invoice-title, .logo-sub,
+            .payment-method-title, .info-block h3, .details-table th {
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-weight: 700 !important;
+            }
+            .details-table .val-amount,
+            .details-table td:nth-child(9) .print-value {
+                color: #0A1C33 !important;
+                -webkit-text-fill-color: #0A1C33 !important;
+                font-weight: 700 !important;
+            }
+        }
+
+
+    /* iPad / Safari 打印保色优化 */
+    @media print {
+        html, body, body *, table, table *, div, span, p, h1, h2, h3, td, th, svg {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        html, body { background-color: #ffffff !important; }
+
+        /* Beyond Vacation 深蓝 */
+        .main-title, .invoice-title, .logo-main, .label, .section-title,
+        .route-label-cell, .payment-method-title, .total-row,
+        .info-block h3 {
+            color: #0A1C33 !important;
+            -webkit-text-fill-color: #0A1C33 !important;
+        }
+
+        /* 品牌金色 */
+        .subtitle, .logo-sub, .brand-slogan,
+        .payment-method-line strong {
+            color: #AF8B51 !important;
+            -webkit-text-fill-color: #AF8B51 !important;
+        }
+
+        .gold-line, .footer-line {
+            background-color: #AF8B51 !important;
+        }
+
+        /* Invoice 表头保持深蓝底白字 */
+        .details-table th {
+            background-color: #0A1C33 !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        /* Invoice 隔行浅背景 */
+        .details-table tr:nth-child(even) {
+            background-color: #F8F9FA !important;
+        }
+
+        /* Payment Method 的浅金背景尽量保持 */
+        .payment-method-box {
+            border-left-color: #AF8B51 !important;
+            background: linear-gradient(90deg, rgba(175,139,81,0.09), rgba(175,139,81,0.02)) !important;
+        }
+
+        .value, .terms-text, .footer-table td, .payment-method-line {
+            color: #444444 !important;
+        }
+
+        svg, svg * {
+            stroke: #AF8B51 !important;
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="action-bar no-copy" aria-label="Invoice actions">
+    <span class="copy-status" id="copyStatus"></span>
+    <button class="action-btn primary" type="button" onclick="copyInvoiceToClipboard()">Copy for Gmail</button>
+    <button class="action-btn" type="button" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="invoice-container">
+
+    <div class="header">
+        <div>
+            <h1 class="logo-main" contenteditable="true">BEYOND VACATION</h1>
+            <p class="logo-sub" contenteditable="true">Executive Transportation</p>
+        </div>
+        <div style="text-align: right;">
+            <h2 class="invoice-title">INVOICE</h2>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-block">
+            <h3>Bill To</h3>
+            <p><strong>Company:</strong> <span contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+        </div>
+        <div class="info-block" style="text-align: right;">
+            <h3>Invoice Info</h3>
+            <p><strong>Invoice Number:</strong> <span contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p><strong>Date:</strong> <span contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+        </div>
+    </div>
+
+    <table class="details-table" id="invoiceTable">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Date</th>
+                <th style="width: 8%;">Service Type</th>
+                <th style="width: 9%;">Conf Number</th>
+                <th style="width: 16%;">Info / Description</th>
+                <th style="width: 14%;">Vehicle</th>
+                <th style="width: 16%;">Additional Charge</th>
+                <th style="width: 8%; text-align: center;">Hours</th>
+                <th style="width: 10%; text-align: right;">Rate</th>
+                <th style="width: 9%; text-align: right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                   <select class="select-input val-type" onchange="handleTypeChange(this)" style="min-width: 140px;">
+    <option value="Hourly">Hourly</option>
+    <option value="Transfer">Transfer</option>
+    <option value="N/A">N/A</option>
+</select>            </td>
+                <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <select class="select-input val-vehicle">
+                        <option value="Sedan">Sedan</option>
+                        <option value="Suv">Suv</option>
+                        <option value="MBS">MBS</option>
+                        <option value="Sprinter">Sprinter</option>
+                        <option value="N/A">N/A</option>
+                    </select>
+                </td>
+<!-- 插入的新列：Additional Charge 下拉菜单 -->
+<td>
+    <select class="select-input val-add-charge" onchange="handleAddChargeChange(this)" style="font-size: 12px;">
+        <option value="N/A">N/A</option>
+        <option value="Meet & Greet">Meet & Greet</option>
+        <option value="Additional Stop">Additional Stop</option>
+        <option value="Waiting Time">Waiting Time</option>
+        <option value="Others">Others</option>
+</select>
+</td>
+                <td style="text-align: center;"><input type="number" class="calc-input val-hours" value="" oninput="calculate()"></td>
+                <td style="text-align: right;"><input type="text" inputmode="decimal" class="calc-input val-rate" value="" oninput="calculate()" onblur="formatRate(this)"></td>
+                <td style="text-align: right;">
+                    <input type="text" inputmode="decimal" class="calc-input val-amount" value="" oninput="calculate()" onblur="formatAmount(this)" style="text-align: right;" disabled>
+                    <span class="delete-btn" onclick="deleteRow(this)">×</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <button class="btn-add-row" onclick="addRow()">+ Add New Row</button>
+
+        <div class="total-box">
+            <div class="total-row">
+                <span>Total:</span>
+                <span>$<span id="grandTotal">0.00</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-method-box" contenteditable="false">
+        <div class="payment-method-title">Payment Method</div>
+        <div class="payment-method-line"><strong>Zelle:</strong> beyondvacationinc@gmail.com</div>
+        <div class="payment-method-line" style="margin-bottom:8px;">Beyond Vacation Inc</div>
+        <div style="height:1px; background-color:rgba(175,139,81,0.28); margin:7px 0 9px 0;"></div>
+        <div class="payment-method-line" style="color:#AF8B51; font-weight:700; letter-spacing:0.3px; margin-bottom:6px;">Wire Transfer</div>
+        <div class="payment-method-line"><strong>Bank Name:</strong> Chase (Checking)</div>
+        <div class="payment-method-line"><strong>Account Number:</strong> 221 821 603</div>
+        <div class="payment-method-line"><strong>Routing Number:</strong> 322271627 <span style="color:#666666;">(Direct Deposit &amp; ACH)</span></div>
+        <div class="payment-method-line"><strong>Routing Number:</strong> 021000021 <span style="color:#666666;">(Domestic Wire)</span></div>
+        <div class="payment-method-line"><strong>SWIFT Code:</strong> CHASUS33 <span style="color:#666666;">(International Wire)</span></div>
+    </div>
+
+    <div class="footer">
+        <p contenteditable="true">Thank you for choosing Beyond Vacation Executive Transportation.</p>
+    </div>
+
+    <!-- Contact Footer -->
+    <div contenteditable="false" style="height:1px; background-color:#AF8B51; width:100%; margin:22px 0 12px 0;"></div>
+    <table contenteditable="false" role="presentation" style="width:100%; border-collapse:collapse; font-family:Arial, Helvetica, sans-serif;">
+        <tr>
+            <td style="width:50%; text-align:center; font-size:11pt; color:#555555; font-weight:normal; padding:0 12px 0 0;">
+                <svg style="width:13px; height:13px; vertical-align:middle; margin-right:5px;" viewBox="0 0 24 24" fill="none" stroke="#AF8B51" stroke-width="2.5">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 1 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                Contact 510-590-1987
+            </td>
+            <td style="width:50%; text-align:center; font-size:11pt; color:#555555; font-weight:normal; padding:0 0 0 12px;">
+                <svg style="width:13px; height:13px; vertical-align:middle; margin-right:5px;" viewBox="0 0 24 24" fill="none" stroke="#AF8B51" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                E-mail beyondvacationinc@gmail.com
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+    // 【终极排错检测】一打开网页就会强制弹窗。如果没弹窗，说明你的文件里有另外一个隐藏的 <script> 标签在作怪！
+    window.onload = function() {
+        console.log("发票系统初始化成功！");
+    };
+
+    // 1. 动态添加新的一行（彻底改名，全网页唯一，绝不可能和旧代码冲突）
+    function addRow() {
+        // 强制解除所有死锁，直接用最原始的表格注入
+        var tableBody = document.querySelector("#invoiceTable tbody");
+        if (!tableBody) {
+            alert("找不到表格，请检查你的表格 id 是否为 invoiceTable");
+            return;
+        }
+
+        var tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <select class="select-input val-type" onchange="handleTypeChange(this)">
+                    <option value="Hourly">Hourly</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="N/A">N/A</option>
+                </select>
+            </td>
+            <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td contenteditable="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <select class="select-input val-vehicle">
+                    <option value="Sedan">Sedan</option>
+                    <option value="Suv">Suv</option>
+                    <option value="MBS">MBS</option>
+                    <option value="Sprinter">Sprinter</option>
+                    <option value="N/A">N/A</option>
+                </select>
+            </td>
+            <td>
+                <select class="select-input val-add-charge" onchange="handleAddChargeChange(this)" style="font-size: 10.5px;">
+        <option value="N/A">N/A</option>
+        <option value="Meet & Greet">Meet & Greet</option>
+        <option value="Additional Stop">Additional Stop</option>
+        <option value="Waiting Time">Waiting Time</option>
+        <option value="Others">Others</option>
+</select>
+            </td>
+            <td style="text-align: center;"><input type="number" class="calc-input val-hours" value="" oninput="calculate()"></td>
+            <td style="text-align: right;"><input type="text" inputmode="decimal" class="calc-input val-rate" value="" oninput="calculate()" onblur="formatRate(this)"></td>
+            <td style="text-align: right;">
+                <input type="text" inputmode="decimal" class="calc-input val-amount" value="" oninput="calculate()" onblur="formatAmount(this)" style="text-align: right;" disabled>
+                <span class="delete-btn" onclick="deleteRow(this)">×</span>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+        calculate();
+    }
+
+    // 2. 智能处理服务类型切换
+    function handleTypeChange(selectElement) {
+        var row = selectElement.closest("tr");
+        var hoursInput = row.querySelector(".val-hours");
+        var rateInput = row.querySelector(".val-rate");
+        var amountInput = row.querySelector(".val-amount");
+
+        if (selectElement.value === "Transfer" || selectElement.value === "N/A") {
+            if (hoursInput) { hoursInput.value = ""; hoursInput.disabled = true; hoursInput.placeholder = "N/A"; }
+            if (rateInput) { rateInput.value = ""; rateInput.disabled = true; rateInput.placeholder = "N/A"; }
+            if (amountInput) { amountInput.disabled = false; amountInput.value = ""; }
+        } else {
+            if (hoursInput) { hoursInput.disabled = false; hoursInput.placeholder = ""; hoursInput.value = ""; }
+            if (rateInput) { rateInput.disabled = false; rateInput.placeholder = ""; rateInput.value = ""; }
+            if (amountInput) { amountInput.disabled = true; amountInput.value = ""; }
+        }
+        calculate();
+    }
+
+    function parseMoney(value) {
+        return parseFloat(String(value || "").replace(/[$,\s]/g, "")) || 0;
+    }
+
+    function formatRate(input) {
+        if (!input || input.value.trim() === "") return;
+        var value = parseMoney(input.value);
+        input.value = "$" + value.toFixed(2);
+        calculate();
+    }
+
+    // 手动输入的 Amount 在离开输入框时统一保留两位小数
+    function formatAmount(input) {
+        if (!input || input.value.trim() === "") return;
+
+        var value = parseMoney(input.value);
+        input.value = "$" + value.toFixed(2);
+        calculate();
+    }
+
+    // 3. 核心金额计算
+    function calculate() {
+        var total = 0;
+        document.querySelectorAll("#invoiceTable tbody tr").forEach(function(row) {
+            var typeSelect = row.querySelector(".val-type");
+            var amountInput = row.querySelector(".val-amount");
+            if (!typeSelect || !amountInput) return;
+
+            var type = typeSelect.value;
+            var amt = 0;
+
+            var addChargeElement = row.querySelector(".val-add-charge");
+            var addCharge = addChargeElement ? addChargeElement.value : "N/A";
+
+            if (type === "Hourly" && addCharge === "N/A") {
+                var hInput = row.querySelector(".val-hours");
+                var rInput = row.querySelector(".val-rate");
+                var hasHours = hInput && hInput.value.trim() !== "";
+                var hasRate = rInput && rInput.value.trim() !== "";
+
+                if (hasHours && hasRate) {
+                    var h = parseFloat(hInput.value) || 0;
+                    var r = parseMoney(rInput.value);
+                    amt = h * r;
+                    amountInput.value = "$" + amt.toFixed(2);
+                } else {
+                    amt = 0;
+                    amountInput.value = "";
+                }
+            } else {
+                amt = parseMoney(amountInput.value);
+            }
+            total += amt;
+        });
+        var grandTotalEl = document.getElementById("grandTotal");
+        if (grandTotalEl) grandTotalEl.textContent = total.toFixed(2);
+    }
+
+    // 4. 删除单行
+    function deleteRow(btn) {
+        btn.closest("tr").remove();
+        calculate();
+    }
+
+    // 5. Additional Charge 智能安全联动
+    function handleAddChargeChange(selectElement) {
+        var row = selectElement.closest("tr");
+        if (!row) return;
+
+        var typeSelect = row.querySelector(".val-type");
+        var vehicleSelect = row.querySelector(".val-vehicle");
+        var hoursInput = row.querySelector(".val-hours");
+        var rateInput = row.querySelector(".val-rate");
+        var amountInput = row.querySelector(".val-amount");
+
+        var dateCell = row.cells[0];
+        var confCell = row.cells[2];
+        var infoCell = row.cells[3];
+
+        if (selectElement.value !== "N/A") {
+            if (dateCell) { dateCell.setAttribute("data-old", dateCell.textContent); dateCell.textContent = "N/A"; dateCell.contentEditable = "false"; }
+            if (confCell) { confCell.setAttribute("data-old", confCell.textContent); confCell.textContent = "N/A"; confCell.contentEditable = "false"; }
+            if (infoCell) { infoCell.setAttribute("data-old", infoCell.textContent); infoCell.textContent = "N/A"; infoCell.contentEditable = "false"; }
+
+            if (typeSelect) { typeSelect.value = "N/A"; typeSelect.disabled = true; }
+            if (vehicleSelect) { vehicleSelect.value = "N/A"; vehicleSelect.disabled = true; }
+            if (hoursInput) { hoursInput.value = ""; hoursInput.disabled = true; hoursInput.placeholder = "N/A"; }
+            if (rateInput) { rateInput.value = ""; rateInput.disabled = true; rateInput.placeholder = "N/A"; }
+            if (amountInput) { amountInput.disabled = false; amountInput.value = ""; }
+        } else {
+            if (dateCell) { dateCell.innerHTML = dateCell.getAttribute("data-old") || "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; dateCell.contentEditable = "true"; }
+            if (confCell) { confCell.innerHTML = confCell.getAttribute("data-old") || "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; confCell.contentEditable = "true"; }
+            if (infoCell) { infoCell.innerHTML = infoCell.getAttribute("data-old") || "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; infoCell.contentEditable = "true"; }
+
+            if (typeSelect) { typeSelect.disabled = false; typeSelect.value = "Hourly"; }
+            if (vehicleSelect) { vehicleSelect.disabled = false; vehicleSelect.value = "Sedan"; }
+            if (hoursInput) { hoursInput.disabled = false; hoursInput.placeholder = ""; hoursInput.value = ""; }
+            if (rateInput) { rateInput.disabled = false; rateInput.placeholder = ""; rateInput.value = ""; }
+            if (amountInput) { amountInput.disabled = true; amountInput.value = ""; }
+        }
+        calculate();
+    }
+
+    // 6. 生成适合 Gmail 粘贴的静态发票副本
+    function buildStaticInvoiceClone() {
+        document.querySelectorAll("#invoiceTable .val-rate:not(:disabled)").forEach(function(input) {
+            if (input.value && input.value.trim() !== "") {
+                var value = parseMoney(input.value);
+                input.value = "$" + value.toFixed(2);
+            }
+        });
+        document.querySelectorAll("#invoiceTable .val-amount:not(:disabled)").forEach(function(input) {
+            if (input.value && input.value.trim() !== "") {
+                var value = parseMoney(input.value);
+                input.value = "$" + value.toFixed(2);
+            }
+        });
+        calculate();
+
+        var source = document.querySelector(".invoice-container");
+        var clone = source.cloneNode(true);
+
+        clone.querySelectorAll(".action-bar, .no-copy, button, .action-btn, .copy-status, .delete-btn, .print-value").forEach(function(el) {
+            el.remove();
+        });
+
+        clone.querySelectorAll("[contenteditable]").forEach(function(el) {
+            el.removeAttribute("contenteditable");
+        });
+
+        var originalSelects = source.querySelectorAll("select");
+        clone.querySelectorAll("select").forEach(function(select, index) {
+            var original = originalSelects[index];
+            var selectedText = "";
+            if (original && original.options[original.selectedIndex]) {
+                selectedText = original.options[original.selectedIndex].text;
+            }
+
+            var span = document.createElement("span");
+            span.textContent = selectedText;
+            span.style.display = "block";
+            span.style.width = "100%";
+            span.style.boxSizing = "border-box";
+            span.style.fontFamily = "Arial, Helvetica, sans-serif";
+            span.style.fontSize = "12px";
+            select.replaceWith(span);
+        });
+
+        var originalInputs = source.querySelectorAll("input");
+        clone.querySelectorAll("input").forEach(function(input, index) {
+            var original = originalInputs[index];
+            var valueText = original ? (original.value || original.placeholder || "") : "";
+
+            var span = document.createElement("span");
+            span.textContent = valueText;
+            span.style.display = "block";
+            span.style.width = "100%";
+            span.style.boxSizing = "border-box";
+            span.style.fontFamily = "Arial, Helvetica, sans-serif";
+            span.style.fontSize = "12px";
+            span.style.textAlign = original ? getComputedStyle(original).textAlign : "left";
+            input.replaceWith(span);
+        });
+
+        /* Gmail 发出后常会破坏 flex，因此把顶部标题改为邮件兼容的 table */
+        var oldHeader = clone.querySelector(".header");
+        if (oldHeader) {
+            var brandBlock = oldHeader.children[0];
+            var titleBlock = oldHeader.children[1];
+
+            var headerTable = document.createElement("table");
+            headerTable.setAttribute("role", "presentation");
+            headerTable.style.width = "100%";
+            headerTable.style.borderCollapse = "collapse";
+            headerTable.style.borderBottom = "3px solid #AF8B51";
+            headerTable.style.marginBottom = "38px";
+
+            var row = headerTable.insertRow();
+            var left = row.insertCell();
+            var right = row.insertCell();
+
+            left.style.width = "65%";
+            left.style.padding = "0 0 24px 0";
+            left.style.verticalAlign = "bottom";
+
+            right.style.width = "35%";
+            right.style.padding = "0 0 24px 0";
+            right.style.verticalAlign = "bottom";
+            right.style.textAlign = "right";
+            right.style.whiteSpace = "nowrap";
+
+            left.appendChild(brandBlock.cloneNode(true));
+            right.appendChild(titleBlock.cloneNode(true));
+
+            oldHeader.replaceWith(headerTable);
+        }
+
+        /* Bill To / Invoice Info 也改成 table，避免收件后左右位置变化 */
+        var oldInfo = clone.querySelector(".info-section");
+        if (oldInfo) {
+            var infoTable = document.createElement("table");
+            infoTable.setAttribute("role", "presentation");
+            infoTable.style.width = "100%";
+            infoTable.style.borderCollapse = "collapse";
+            infoTable.style.marginBottom = "38px";
+
+            var infoRow = infoTable.insertRow();
+            var infoLeft = infoRow.insertCell();
+            var infoRight = infoRow.insertCell();
+
+            infoLeft.style.width = "48%";
+            infoLeft.style.verticalAlign = "top";
+            infoRight.style.width = "48%";
+            infoRight.style.verticalAlign = "top";
+            infoRight.style.textAlign = "right";
+
+            infoLeft.appendChild(oldInfo.children[0].cloneNode(true));
+            infoRight.appendChild(oldInfo.children[1].cloneNode(true));
+
+            oldInfo.replaceWith(infoTable);
+        }
+
+        /* 把关键样式内联，避免 Gmail 发出后删除网页 CSS */
+        clone.style.width = "100%";
+        clone.style.maxWidth = "900px";
+        clone.style.margin = "0";
+        clone.style.padding = "18px";
+        clone.style.boxSizing = "border-box";
+        clone.style.background = "#ffffff";
+        clone.style.color = "#333333";
+        clone.style.fontFamily = "Arial, Helvetica, sans-serif";
+
+        clone.querySelectorAll(".logo-main").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "30px";
+            el.style.lineHeight = "1.1";
+            el.style.fontWeight = "800";
+            el.style.letterSpacing = "1px";
+            el.style.color = "#0A1C33";
+            el.style.margin = "0";
+            el.style.whiteSpace = "nowrap";
+        });
+
+        clone.querySelectorAll(".logo-sub").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "12px";
+            el.style.fontWeight = "700";
+            el.style.letterSpacing = "2px";
+            el.style.color = "#AF8B51";
+            el.style.margin = "8px 0 0 0";
+            el.style.whiteSpace = "nowrap";
+        });
+
+        clone.querySelectorAll(".invoice-title").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "42px";
+            el.style.lineHeight = "1";
+            el.style.fontWeight = "800";
+            el.style.letterSpacing = "2px";
+            el.style.color = "#0A1C33";
+            el.style.margin = "0";
+            el.style.whiteSpace = "nowrap";
+        });
+
+        clone.querySelectorAll(".info-block").forEach(function(el) {
+            el.style.width = "100%";
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+        });
+
+        clone.querySelectorAll(".info-block h3").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "13px";
+            el.style.color = "#0A1C33";
+            el.style.borderBottom = "1px solid #E0E0E0";
+            el.style.paddingBottom = "6px";
+            el.style.margin = "0 0 12px 0";
+        });
+
+        clone.querySelectorAll(".info-block p").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "13px";
+            el.style.margin = "8px 0";
+        });
+
+        var table = clone.querySelector(".details-table");
+        if (table) {
+            table.style.width = "100%";
+            table.style.borderCollapse = "collapse";
+            table.style.tableLayout = "auto";
+            table.style.marginBottom = "28px";
+        }
+
+        clone.querySelectorAll(".details-table th").forEach(function(el) {
+            el.style.backgroundColor = "#0A1C33";
+            el.style.color = "#ffffff";
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "11px";
+            el.style.fontWeight = "700";
+            el.style.padding = "10px 6px";
+            el.style.textAlign = el.cellIndex >= 7 ? "right" : "left";
+            el.style.verticalAlign = "middle";
+        });
+
+        clone.querySelectorAll(".details-table td").forEach(function(el) {
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "12px";
+            el.style.padding = "10px 6px";
+            el.style.borderBottom = "1px solid #EAEAEA";
+            el.style.verticalAlign = "middle";
+        });
+
+        clone.querySelectorAll(".details-table td:nth-child(9) span").forEach(function(el) {
+            el.style.color = "#0A1C33";
+            el.style.fontWeight = "800";
+        });
+
+        clone.querySelectorAll(".total-section").forEach(function(el) {
+            el.style.display = "block";
+            el.style.marginTop = "18px";
+        });
+
+        clone.querySelectorAll(".total-box").forEach(function(el) {
+            el.style.width = "320px";
+            el.style.marginLeft = "auto";
+            el.style.borderTop = "2px solid #AF8B51";
+            el.style.paddingTop = "14px";
+        });
+
+        clone.querySelectorAll(".total-row").forEach(function(el) {
+            el.style.display = "table";
+            el.style.width = "100%";
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "21px";
+            el.style.fontWeight = "800";
+            el.style.color = "#0A1C33";
+        });
+
+        clone.querySelectorAll(".total-row > span").forEach(function(el, index) {
+            el.style.display = "table-cell";
+            el.style.textAlign = index === 0 ? "left" : "right";
+        });
+
+        clone.querySelectorAll(".payment-method-box").forEach(function(el) {
+            el.style.width = "560px";
+            el.style.margin = "105px 0 6px 0";
+            el.style.padding = "14px 18px";
+            el.style.borderLeft = "3px solid #AF8B51";
+            el.style.background = "#FBF8F3";
+            el.style.borderRadius = "0 6px 6px 0";
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+        });
+
+        clone.querySelectorAll(".payment-method-title").forEach(function(el) {
+            el.style.margin = "0 0 7px 0";
+            el.style.color = "#0A1C33";
+            el.style.fontSize = "14px";
+            el.style.fontWeight = "800";
+            el.style.letterSpacing = "0.5px";
+        });
+
+        clone.querySelectorAll(".payment-method-line").forEach(function(el) {
+            el.style.margin = "3px 0";
+            el.style.color = "#333333";
+            el.style.fontSize = "13px";
+            el.style.lineHeight = "1.45";
+        });
+
+        clone.querySelectorAll(".payment-method-line strong").forEach(function(el) {
+            el.style.color = "#AF8B51";
+            el.style.fontWeight = "700";
+        });
+
+        clone.querySelectorAll(".footer").forEach(function(el) {
+            el.style.marginTop = "10px";
+            el.style.paddingTop = "18px";
+            el.style.borderTop = "1px solid #EAEAEA";
+            el.style.textAlign = "center";
+            el.style.fontFamily = "Arial, Helvetica, sans-serif";
+            el.style.fontSize = "11px";
+            el.style.color = "#888888";
+        });
+
+        return clone;
+    }
+
+    function setCopyStatus(message, isError) {
+        var status = document.getElementById("copyStatus");
+        if (!status) return;
+        status.textContent = message;
+        status.style.color = isError ? "#a40000" : "#0A1C33";
+        window.clearTimeout(setCopyStatus.timer);
+        setCopyStatus.timer = window.setTimeout(function() {
+            status.textContent = "";
+        }, 3500);
+    }
+
+    async function copyInvoiceToClipboard() {
+        var actionBar = document.querySelector(".action-bar");
+        var previousDisplay = actionBar ? actionBar.style.display : "";
+
+        if (actionBar) {
+            actionBar.style.display = "none";
+        }
+
+        var clone = buildStaticInvoiceClone();
+        var wrapper = document.createElement("div");
+        wrapper.style.position = "fixed";
+        wrapper.style.left = "-10000px";
+        wrapper.style.top = "0";
+        wrapper.style.background = "#fff";
+        wrapper.appendChild(clone);
+        document.body.appendChild(wrapper);
+
+        var copied = false;
+
+        // Selection-based rich copy works on local HTML files and preserves the rendered table for Gmail.
+        try {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            var range = document.createRange();
+            range.selectNodeContents(clone);
+            selection.addRange(range);
+            copied = document.execCommand("copy");
+            selection.removeAllRanges();
+        } catch (err) {
+            console.error(err);
+        }
+
+        wrapper.remove();
+
+        if (actionBar) {
+            actionBar.style.display = previousDisplay;
+        }
+
+        if (copied) {
+            setCopyStatus("Copied — paste into Gmail");
+        } else {
+            setCopyStatus("Copy failed. Please use Chrome or Safari.", true);
+        }
+    }
+
+    function preparePrintValues() {
+        document.querySelectorAll("#invoiceTable .val-rate:not(:disabled)").forEach(function(input) {
+            if (input.value && input.value.trim() !== "") {
+                var value = parseMoney(input.value);
+                input.value = "$" + value.toFixed(2);
+            }
+        });
+        document.querySelectorAll("#invoiceTable .val-amount:not(:disabled)").forEach(function(input) {
+            if (input.value && input.value.trim() !== "") {
+                var value = parseMoney(input.value);
+                input.value = "$" + value.toFixed(2);
+            }
+        });
+
+        document.querySelectorAll("#invoiceTable input, #invoiceTable select").forEach(function(control) {
+            if (control.classList.contains("print-hidden")) return;
+
+            var valueText = "";
+            if (control.tagName === "SELECT") {
+                valueText = control.options[control.selectedIndex] ? control.options[control.selectedIndex].text : "";
+            } else {
+                valueText = control.value || control.placeholder || "";
+            }
+
+            var span = document.createElement("span");
+            span.className = "print-value";
+            span.textContent = valueText;
+            control.classList.add("print-hidden");
+            control.insertAdjacentElement("afterend", span);
+        });
+    }
+
+    function cleanupPrintValues() {
+        document.querySelectorAll("#invoiceTable .print-value").forEach(function(span) {
+            span.remove();
+        });
+        document.querySelectorAll("#invoiceTable .print-hidden").forEach(function(control) {
+            control.classList.remove("print-hidden");
+        });
+    }
+
+    window.addEventListener("beforeprint", preparePrintValues);
+    window.addEventListener("afterprint", cleanupPrintValues);
+
+</script>
+</body>
+</html>
